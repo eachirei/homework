@@ -12,18 +12,90 @@
 				"header": [
 					{
 						"key": "profile_id",
-						"value": "6",
+						"value": "1",
 						"type": "default"
 					}
 				],
 				"url": {
-					"raw": "{{url}}/contracts/3",
+					"raw": "{{url}}/contracts/1",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"contracts",
-						"3"
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list contracts",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "profile_id",
+						"value": "1",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/contracts",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"contracts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "unpaid jobs",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "profile_id",
+						"value": "2",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/jobs/unpaid",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"jobs",
+						"unpaid"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay job",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "profile_id",
+						"value": "2",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/jobs/15/pay",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"jobs",
+						"15",
+						"pay"
 					]
 				}
 			},
