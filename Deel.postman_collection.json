@@ -1,0 +1,60 @@
+{
+	"info": {
+		"_postman_id": "765d27a6-580c-43a3-831e-e167eb1b9872",
+		"name": "Deel",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get contract",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "profile_id",
+						"value": "6",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/contracts/3",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"contracts",
+						"3"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:3001",
+			"type": "default"
+		}
+	]
+}
