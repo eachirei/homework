@@ -125,7 +125,7 @@ router.post('/jobs/:job_id/pay', async (req, res, next) => {
             );
 
             if (!job) {
-                throw new Error({ message: '404' });
+                throw new Error('404');
             }
 
             const contractorProfile = job.Contract.Contractor;
@@ -133,7 +133,7 @@ router.post('/jobs/:job_id/pay', async (req, res, next) => {
             const clientProfile = req.profile;
 
             if (job.price > clientProfile.balance) {
-                throw new Error({ message: '403' });
+                throw new Error('403');
             }
 
             await clientProfile.update({ balance: clientProfile.balance - job.price }, { transaction: t });
