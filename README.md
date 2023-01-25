@@ -1,3 +1,26 @@
+# TODO
+
+## Rest of APIs
+ - admin best profession: 
+   
+```SELECT SUM(j.price) FROM jobs AS j INNER JOIN contracts AS c ON c.id = j.contractId INNER JOIN profiles AS p ON p.id = j.contractorId WHERE j.paid IS true and j.paymentDate between start and end group by p.profession```
+
+ - admin best payers
+
+```SELECT SUM(j.price) AS total FROM jobs AS j INNER JOIN contracts AS c ON c.id = j.contractId INNER JOIN profiles AS p ON p.id = j.clientId WHERE j.paid IS true and j.paymentDate between start and end group by p.profession order by total desc limit 2```
+
+## Code structure
+
+ - reuse some of the sql queries 
+
+## Validation (json schema validators)
+
+## Testing
+
+ - both unit and integration tests for the flows
+
+## Typescript
+
 # DEEL BACKEND TASK
 
 💫 Welcome! 🎉
