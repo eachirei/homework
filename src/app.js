@@ -5,79 +5,17 @@ const { getProfile } = require('./middleware/getProfile');
 const { Op } = require('sequelize');
 const router = express.Router();
 const app = express();
+const contractsRouter = require('./routes/contracts');
+const { getQueryByProfileType,
+    getQueryByState
+} = require('./utils');
 app.use(bodyParser.json());
 app.set('sequelize', sequelize);
 app.set('models', sequelize.models);
 
+app.use(contractsRouter);
+
 router.use(getProfile);
-
-const getQueryByProfileType = ({ type, id }) => (type === 'contractor' ? { ContractorId: id } : { ClientId: id });
-
-/**
- * @returns contract by id
- */
-router.get('/contracts/:id', async (req, res) => {
-    const { Contract } = req.app.get('models');
-    const { id } = req.params;
-
-    const query = {
-        where: {
-            ...getQueryByProfileType(req.profile),
-            id,
-        },
-    };
-
-    const contract = await Contract.findOne(query);
-    if (!contract) {
-        return res.status(404).end();
-    }
-
-    return res.json(contract);
-});
-
-/**
- *
- * @param state {'active' | 'unfinished'}
- * @returns queryByState
- */
-const getQueryByState = state => {
-    switch (state) {
-        case 'active': {
-            return {
-                status: 'in_progress',
-            };
-        }
-        case 'unfinished': {
-            return {
-                [Op.not]: { status: 'terminated' },
-            };
-        }
-    }
-};
-
-/***
- * @param profile Profile
- * @param state {'active' | 'unfinished'}
- * @returns Promise<Array<Contract>>
- */
-const getContractsByState = (profile, state) => {
-    const { Contract } = app.get('models');
-
-    const query = {
-        where: {
-            ...getQueryByProfileType(profile),
-            ...getQueryByState(state),
-        },
-    };
-
-    return Contract.findAll(query);
-};
-
-router.get('/contracts', async (req, res, next) => {
-    const contracts = await getContractsByState(req.profile, 'unfinished');
-
-    return res.json(contracts);
-});
 
 router.get('/jobs/unpaid', async (req, res, next) => {
     const { Job } = req.app.get('models');
