@@ -1,29 +1,40 @@
 {
-  "name": "homework",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "deel-task",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
     "build": "tsc",
     "lint": "eslint --fix $(git diff-index --name-only --diff-filter=d HEAD | xargs)",
     "prepare": "husky install",
     "pretty": "prettier --write $(git diff-index --name-only --diff-filter=d HEAD | xargs)",
-    "start": "node -r ts-node/register index.ts",
+    "start": "nodemon ./src/server.js",
+    "seed": "node ./scripts/seedDb.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "@commitlint/cli": "^17.4.2",
     "@commitlint/config-conventional": "^17.4.2",
-    "@typescript-eslint/eslint-plugin": "^5.49.0",
-    "@typescript-eslint/parser": "^5.49.0",
+    "body-parser": "^1.19.0",
     "eslint": "^8.32.0",
+    "express": "4.17.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.0",
     "prettier": "^2.8.3",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.9.4"
-  }
+    "sequelize": "^6.3.4",
+    "sqlite3": "^4.0.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.4.2",
+    "@commitlint/config-conventional": "^17.4.2",
+    "concurrently": "4.1.0",
+    "eslint": "^8.32.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.1.0",
+    "nodemon": "1.19.1",
+    "prettier": "^2.8.3"
+  },
+  "engines": {
+    "node": ">=10.16.3"
+  },
+  "engineStrict": true
 }
