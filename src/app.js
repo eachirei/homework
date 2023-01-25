@@ -88,7 +88,7 @@ router.get('/jobs/unpaid', async (req, res, next) => {
         where: {
             ...getQueryByProfileType(req.profile),
             ...getQueryByState('active'),
-            '$Jobs.paid$': {[Op.or]: [null, false]}
+            '$Jobs.paid$': { [Op.or]: [null, false] },
         },
     };
 
@@ -102,6 +102,45 @@ router.get('/jobs/unpaid', async (req, res, next) => {
     });
 
     return res.json(contractsWithJobs.map(c => c.Jobs).flat());
+});
+
+router.post('/jobs/:job_id/pay', async (req, res, next) => {
+    const { Job, Contract, Profile } = req.app.get('models');
+
+    const { job_id } = req.params;
+
+    const job = await Job.findOne({
+        where: {
+            id: job_id,
+            paid: { [Op.or]: [null, false] },
+            '$Contract.ClientId$': req.profile.id,
+        },
+        include: [{ model: Contract, include: [{ model: Profile, as: 'Contractor' }] }],
+    });
+
+    if (!job) {
+        return res.status(404).end();
+    }
+
+    const contractorProfile = job.Contract.Contractor;
+
+    const clientProfile = req.profile;
+
+    if (job.price > clientProfile.balance) {
+        return res.status(403).end();
+    }
+
+    try {
+        await sequelize.transaction(async t => {
+            await clientProfile.update({ balance: clientProfile.balance - job.price });
+            await contractorProfile.update({ balance: clientProfile.balance + job.price });
+            await job.update({ paid: true, paymentDate: new Date() });
+        });
+    } catch (error) {
+        return res.status(500).end();
+    }
+
+    return res.status(200).end();
 });
 
 app.use(router);
