@@ -35,23 +35,73 @@ router.get('/contracts/:id', async (req, res) => {
     return res.json(contract);
 });
 
-router.get('/contracts', async (req, res, next) => {
-    const { Contract } = req.app.get('models');
+/**
+ *
+ * @param state {'active' | 'unfinished'}
+ * @returns queryByState
+ */
+const getQueryByState = state => {
+    switch (state) {
+        case 'active': {
+            return {
+                status: 'in_progress',
+            };
+        }
+        case 'unfinished': {
+            return {
+                [Op.not]: { status: 'terminated' },
+            };
+        }
+    }
+};
 
-    // query by contractor id or client id based on type of profile
+/***
+ * @param profile Profile
+ * @param state {'active' | 'unfinished'}
+ * @returns Promise<Array<Contract>>
+ */
+const getContractsByState = (profile, state) => {
+    const { Contract } = app.get('models');
+
     const query = {
         where: {
-            ...getQueryByProfileType(req.profile),
-            [Op.not]: { status: 'terminated' },
+            ...getQueryByProfileType(profile),
+            ...getQueryByState(state),
         },
     };
 
-    const contracts = await Contract.findAll(query);
-    if (!contracts) {
-        return res.status(404).end();
-    }
+    return Contract.findAll(query);
+};
+
+router.get('/contracts', async (req, res, next) => {
+    const contracts = await getContractsByState(req.profile, 'unfinished');
 
     return res.json(contracts);
+});
+
+router.get('/jobs/unpaid', async (req, res, next) => {
+    const { Job } = req.app.get('models');
+
+    const { Contract } = app.get('models');
+
+    const query = {
+        where: {
+            ...getQueryByProfileType(req.profile),
+            ...getQueryByState('active'),
+            '$Jobs.paid$': {[Op.or]: [null, false]}
+        },
+    };
+
+    const contractsWithJobs = await Contract.findAll({
+        ...query,
+        include: [
+            {
+                model: Job,
+            },
+        ],
+    });
+
+    return res.json(contractsWithJobs.map(c => c.Jobs).flat());
 });
 
 app.use(router);
