@@ -1,6 +1,3 @@
 module.exports = {
-    "*": [
-        "npm run lint",
-        "npm run pretty"
-    ]
+    '*': ['npm run lint', 'npm run pretty'],
 };
